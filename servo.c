@@ -38,6 +38,7 @@ struct Servo{
 };
 
 struct Servo sServo;
+unsigned int uiOffset =12;
 
 void Automat(){
 			
@@ -50,7 +51,7 @@ void Automat(){
 		}
 		else{
 			sServo.eState = IDLE;
-			sServo.uiCurrentPosition = 0;
+			sServo.uiCurrentPosition = uiOffset;
 			sServo.uiDesiredPosition = 0;
 		}
 		break;
