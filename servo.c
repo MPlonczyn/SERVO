@@ -27,6 +27,7 @@ enum DetectorState eReadDetector(){
 
 enum ServoState{
 	CALLIB,
+	OFFSET,
 	IDLE,
 	IN_PROGRESS
 };
@@ -51,7 +52,20 @@ void Automat(){
 		}
 		else{
 			sServo.eState = IDLE;
-			sServo.uiCurrentPosition = uiOffset;
+			sServo.uiCurrentPosition = 0;
+			sServo.uiDesiredPosition = 0;
+		}
+		break;
+		
+		case OFFSET:
+		if(sServo.uiCurrentPosition != uiOffset){
+			sServo.eState = OFFSET;
+			sServo.uiCurrentPosition++;
+			LedStepRight();
+		}
+		else{
+			sServo.eState = IDLE;
+			sServo.uiCurrentPosition = 0;
 			sServo.uiDesiredPosition = 0;
 		}
 		break;
@@ -88,12 +102,19 @@ void ServoInit(unsigned int uiServoFrequency){
 	DetectorInit();
 	LedInit();
 	Timer0Interrupts_Init((1000000/uiServoFrequency),&Automat);
+	while(sServo.eState == CALLIB){
+	}
 }
 
 void ServoCallib(){
 	sServo.eState = CALLIB;
+	while(sServo.eState == CALLIB){
+	}
 }
 
 void ServoGoTo(unsigned int uiPosition){
 	sServo.uiDesiredPosition = uiPosition;
+	sServo.eState = IN_PROGRESS;
+	while(sServo.eState == IN_PROGRESS){
+	}
 }
